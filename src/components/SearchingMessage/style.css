@@ -1,0 +1,8 @@
+.SearchingMessage {
+  color: grey;
+  padding: 4px 8px;
+}
+
+.SearchingMessage.error {
+  color: rgb(155, 39, 39);
+}

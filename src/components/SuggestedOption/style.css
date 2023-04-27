@@ -1,0 +1,24 @@
+.SuggestedOption {
+  display: -webkit-box;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.SuggestedOption .no-match {
+  font-weight: bold;
+}
+
+.SuggestedOption .highlighted {
+  font-weight: bold;
+}
+
+.SuggestedOption.active {
+  background-color: antiquewhite;
+}
