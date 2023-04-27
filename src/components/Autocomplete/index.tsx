@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Option, RequestState } from "../../types";
 import SearchingMessage from "../SearchingMessage";
 import { SuggestedOption } from "../SuggestedOption";
 import "./style.css";
+import useClickOutside from "../../hooks/useClickOutside";
+import { log } from "console";
 
 interface AutoCompleteProps {
   label: string;
@@ -30,10 +32,17 @@ const Autocomplete = (props: AutoCompleteProps) => {
   // the user browses suggested options with ArrowUp or ArrowDown keys.
   // -1 means that nothing is highlighted
   const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
 
-  const handleSelect = (option: Option) => {
+  useClickOutside([inputRef, optionsRef], () => {
+    handleSelect(null);
+  });
+
+  const handleSelect = (option: Option | null) => {
     setSearched("");
     onSelect(option);
+    inputRef.current?.focus();
   };
 
   const handleSearch = (value: string) => {
@@ -66,13 +75,14 @@ const Autocomplete = (props: AutoCompleteProps) => {
           className="Autocomplete-input"
           type="text"
           placeholder="Search for a country..."
-          value={searched || value}
+          ref={inputRef}
+          value={searched || value || ""}
           onKeyDown={handleKeyDown}
           onChange={(e) => handleSearch(e.target.value.trim())}
         />
       </label>
 
-      <div className="Autocomplete-options">
+      <div className="Autocomplete-options" ref={optionsRef}>
         {reqState === RequestState.Waiting && (
           <SearchingMessage message="Please wait..." />
         )}
@@ -82,7 +92,7 @@ const Autocomplete = (props: AutoCompleteProps) => {
         {reqState === RequestState.Success &&
           hasSearched &&
           !options.length && <SearchingMessage message={noSuggestionMsg} />}
-        
+
         {reqState === RequestState.Success &&
           hasSearched &&
           options.map((option, index) => (
